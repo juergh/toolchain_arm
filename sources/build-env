@@ -1,0 +1,19 @@
+#!/bin/bash
+
+TOOLCHAIN=$(pushd $(dirname $BASH_SOURCE) > /dev/null; pwd; popd > /dev/null)
+if ! echo $PATH | grep -q $TOOLCHAIN ; then
+    export PATH="${TOOLCHAIN}/bin:${PATH}"
+fi
+
+export CFLAGS="-Wall -s -Os -mtune=arm9e -march=armv5te"
+
+export AR="arm-linux-uclibc-ar"
+export AS="arm-linux-uclibc-as"
+export CXX="arm-linux-uclibc-g++"
+export CC="arm-linux-uclibc-gcc"
+export LD="arm-linux-uclibc-ld"
+export NM="arm-linux-uclibc-nm"
+export OBJDUMP="arm-linux-uclibc-objdump"
+export RANLIB="arm-linux-uclibc-ranlib"
+export READELF="arm-linux-uclibc-readelf"
+export STRIP="arm-linux-uclibc-strip"
