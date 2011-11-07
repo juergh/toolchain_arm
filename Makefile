@@ -231,6 +231,9 @@ source: $(TARGETS_SOURCE)
 #############################################################
 clean: $(TARGETS_CLEAN)
 	rm -rf $(STAGING_DIR)
+	rm -rf $(TOOL_BUILD_DIR)
+	rm -rf $(DL_DIR)
+	@find . \( -name '*~' \) -type f -print | xargs rm -f
 
 dirclean: $(TARGETS_DIRCLEAN)
 	rm -rf $(STAGING_DIR)

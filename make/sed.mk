@@ -67,9 +67,9 @@ use-sed-host-binary:
 
 host-sed: $(HOST_SED_TARGET)
 
-host-sed-clean:
-	$(MAKE) DESTDIR=$(STAGING_DIR) -C $(SED_DIR1) uninstall
-	-sed -C $(SED_DIR1) clean
+#host-sed-clean:
+#	$(MAKE) DESTDIR=$(STAGING_DIR) -C $(SED_DIR1) uninstall
+#	-sed -C $(SED_DIR1) clean
 
 host-sed-dirclean:
 	rm -rf $(SED_DIR1)
