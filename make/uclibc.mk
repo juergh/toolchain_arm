@@ -51,7 +51,12 @@ ifeq ($(strip $(UCLIBC_TARGET_ARCH)),mips)
 endif
 	touch $(UCLIBC_DIR)/.unpacked
 
-$(UCLIBC_DIR)/.configured: $(UCLIBC_DIR)/.unpacked $(LINUX_DIR)/.configured
+$(UCLIBC_DIR)/.patched: $(UCLIBC_DIR)/.unpacked
+	# Apply any files named uclibc-*.patch from the source directory
+	$(SOURCE_DIR)/patch-kernel.sh $(UCLIBC_DIR) $(SOURCE_DIR) uclibc*.patch
+	touch $(UCLIBC_DIR)/.patched
+
+$(UCLIBC_DIR)/.configured: $(UCLIBC_DIR)/.patched $(LINUX_DIR)/.configured
 	$(SED) 's,^CROSS=.*,CROSS=$(TARGET_CROSS),g' $(UCLIBC_DIR)/Rules.mak
 ifeq ($(ENABLE_LOCALE),true)
 	cp $(SOURCE_DIR)/uClibc.config-locale $(UCLIBC_DIR)/.config

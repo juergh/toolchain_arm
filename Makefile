@@ -111,7 +111,7 @@ INSTALL_LIBGCJ:=false
 #
 #############################################################
 TARGETS+=host-sed kernel-headers uclibc-configured binutils \
-	 gcc3_3 # # gdb #ccache
+	 gcc3_3 post_fixups  #gdb #ccache
 
 #############################################################
 #
@@ -203,6 +203,12 @@ world: $(DL_DIR) $(STAGING_DIR) $(TARGETS)
 	$(TARGETS_CLEAN) $(TARGETS_DIRCLEAN) $(TARGETS_SOURCE)
 
 include make/*.mk
+
+
+post_fixups:
+	@cp sources/build-env $(BUILD_DIR)
+	@cd $(BUILD_DIR)/$(OPTIMIZE_FOR_CPU)-linux-uclibc/lib && \
+		ln -sf ../../lib/ldscripts
 
 #############################################################
 #

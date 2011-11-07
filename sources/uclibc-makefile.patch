@@ -1,0 +1,19 @@
+--- uClibc-0.9.28/Makefile.orig	2005-08-18 00:49:49.000000000 +0200
++++ uClibc-0.9.28/Makefile	2011-11-07 16:02:20.500804800 +0100
+@@ -151,14 +151,14 @@
+ install: install_runtime install_dev finished2
+ 
+ 
+-RUNTIME_PREFIX_LIB_FROM_DEVEL_PREFIX_LIB=$(shell extra/scripts/relative_path.sh $(DEVEL_PREFIX)lib $(RUNTIME_PREFIX)lib)
++RUNTIME_PREFIX_LIB_FROM_DEVEL_PREFIX_LIB=$(shell extra/scripts/relative_path.sh $(PREFIX)$(DEVEL_PREFIX)lib $(RUNTIME_PREFIX)lib)
+ 
+ # Installs header files and development library links.
+ install_dev:
+ 	$(INSTALL) -d $(PREFIX)$(DEVEL_PREFIX)lib
+ 	$(INSTALL) -d $(PREFIX)$(DEVEL_PREFIX)include
+ 	-$(INSTALL) -m 644 lib/*.[ao] $(PREFIX)$(DEVEL_PREFIX)lib/
+-	if [ "$(KERNEL_SOURCE)" == "$(DEVEL_PREFIX)" ] ; then \
++	if [ "$(KERNEL_SOURCE)" = "$(DEVEL_PREFIX)" ] ; then \
+ 		extra_exclude="--exclude include/linux --exclude include/asm'*'" ; \
+ 	else \
+ 		extra_exclude="" ; \
