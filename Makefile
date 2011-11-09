@@ -214,6 +214,10 @@ $(BUILD_DIR)/$(OPTIMIZE_FOR_CPU)-linux-uclibc/lib/ldscripts:
 post_fixups: $(BUILD_DIR)/build-env \
 	$(BUILD_DIR)/$(OPTIMIZE_FOR_CPU)-linux-uclibc/lib/ldscripts
 
+tgz:
+	tar czf toolchain_$(ARCH)$(ARCH_FPU_SUFFIX).tgz \
+		toolchain_$(ARCH)$(ARCH_FPU_SUFFIX)/*
+
 #############################################################
 #
 # staging and target directories do NOT list these as
