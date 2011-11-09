@@ -204,11 +204,15 @@ world: $(DL_DIR) $(STAGING_DIR) $(TARGETS)
 
 include make/*.mk
 
-
-post_fixups:
+$(BUILD_DIR)/build-env:
 	@cp sources/build-env $(BUILD_DIR)
+
+$(BUILD_DIR)/$(OPTIMIZE_FOR_CPU)-linux-uclibc/lib/ldscripts:
 	@cd $(BUILD_DIR)/$(OPTIMIZE_FOR_CPU)-linux-uclibc/lib && \
 		ln -sf ../../lib/ldscripts
+
+post_fixups: $(BUILD_DIR)/build-env \
+	$(BUILD_DIR)/$(OPTIMIZE_FOR_CPU)-linux-uclibc/lib/ldscripts
 
 #############################################################
 #
