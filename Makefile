@@ -111,7 +111,7 @@ INSTALL_LIBGCJ:=false
 #
 #############################################################
 TARGETS+=host-sed kernel-headers uclibc-configured binutils \
-	 gcc3_3 post_fixups  #gdb #ccache
+	 gcc3_3 zlib post_fixups  #gdb #ccache
 
 #############################################################
 #
