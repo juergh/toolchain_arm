@@ -1,0 +1,67 @@
+Cross-compilation toolchain for the DNS-323
+-------------------------------------------
+
+This repository contains the environment to build an ARM cross-compilation
+toolchain to generate binaries for D-Link's DNS-323 NAS. With this toolchain
+you'll be able to compile programs that can be run directly on the DNS-323.
+This environment has been extracted from the uclibc tarball from the GPL source
+code that D-Link provides at:
+ftp://gpl.dlink.com/DNS-323/dns323_GPL_v1.08_12182009.tgz
+I made some minor tweaks to fix a problem that prevented the toolchain from
+creating dynamically linked binaries. I also extended the env to download,
+build, and install libz (within the toolchain tree) which is required if you
+want to use the toolchain to build, e.g., dropbear. Note that there are more
+shared libraries installed on the DNS-323 than this toolchain provides.
+
+
+Prerequisites
+-------------
+
+You need to use gcc 3.x or an early 4.x version to be able to compile the
+toolchain. A later gcc 4.x won't work and will produce an error during
+compilation of the toolchain's gcc.
+
+
+Compile the toolchain
+---------------------
+
+As simple as the following :-)
+
+$ git clone git@github.com:juergh/toolchain_arm.git
+$ cd toolchain_arm
+$ make
+
+The first step of the compilation process will download the source code of the
+different packages into the directory sources/dl, so might take a while
+depending on the speed of your internet connection.
+
+
+Test the toolchain
+------------------
+
+After successful compilationm, source the envrionment variables and compile the
+test program:
+
+$ source toolchain_arm/build-env
+$ make test
+
+Which should produce the following output:
+
+make[1]: Entering directory `/home/juergh/Projects/dns-323/toolchain_arm/test'
+arm-linux-uclibc-gcc -Wall -s -Os -mtune=arm9e -march=armv5te   -c -o hello.o 
+   hello.c
+arm-linux-uclibc-gcc -o hello hello.o
+hello: ELF 32-bit LSB executable, ARM, version 1, dynamically linked
+   (uses shared libs), not stripped
+ 0x00000001 (NEEDED)                     Shared library: [libc.so.0]
+
+Note the architecture of the executable (ARM) and that it's dynamically linked
+against uclibc.
+
+
+Install the toolchain
+---------------------
+
+Copy/move the directory tree toolchain_arm/toolchain_arm to wherever you want
+to. Don't forget to source toolchain_arm/build-env before you attempt to
+compile a program for the DNS-323.
