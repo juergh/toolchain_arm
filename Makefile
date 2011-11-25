@@ -200,7 +200,7 @@ TARGETS_DIRCLEAN:=$(patsubst %,%-dirclean,$(TARGETS))
 world: $(DL_DIR) $(STAGING_DIR) $(TARGETS)
 
 .PHONY: all world clean dirclean distclean source $(TARGETS) \
-	$(TARGETS_CLEAN) $(TARGETS_DIRCLEAN) $(TARGETS_SOURCE)
+	$(TARGETS_CLEAN) $(TARGETS_DIRCLEAN) $(TARGETS_SOURCE) test
 
 include make/*.mk
 
@@ -217,6 +217,9 @@ post_fixups: $(BUILD_DIR)/build-env \
 tgz:
 	tar czf toolchain_$(ARCH)$(ARCH_FPU_SUFFIX).tgz \
 		toolchain_$(ARCH)$(ARCH_FPU_SUFFIX)/*
+
+test:
+	$(MAKE) -C test
 
 #############################################################
 #
