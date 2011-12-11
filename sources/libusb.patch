@@ -1,7 +1,7 @@
 Index: libusb-0.1.12/Makefile.in
 ===================================================================
---- libusb-0.1.12.orig/Makefile.in	2011-12-11 13:42:46.324325762 +0100
-+++ libusb-0.1.12/Makefile.in	2011-12-11 13:50:26.506607674 +0100
+--- libusb-0.1.12.orig/Makefile.in	2006-03-04 03:54:03.000000000 +0100
++++ libusb-0.1.12/Makefile.in	2011-12-11 14:19:35.783281870 +0100
 @@ -17,7 +17,7 @@
  
  
@@ -21,11 +21,13 @@ Index: libusb-0.1.12/Makefile.in
  binSCRIPT_INSTALL = $(INSTALL_SCRIPT)
  SCRIPTS = $(bin_SCRIPTS)
  DEFAULT_INCLUDES = 
-@@ -83,7 +80,6 @@
+@@ -82,8 +79,7 @@
+ am__depfiles_maybe = depfiles
  @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/bsd.Plo ./$(DEPDIR)/darwin.Plo \
  @AMDEP_TRUE@	./$(DEPDIR)/descriptors.Plo ./$(DEPDIR)/error.Plo \
- @AMDEP_TRUE@	./$(DEPDIR)/linux.Plo ./$(DEPDIR)/usb.Plo \
+-@AMDEP_TRUE@	./$(DEPDIR)/linux.Plo ./$(DEPDIR)/usb.Plo \
 -@AMDEP_TRUE@	./$(DEPDIR)/usbpp.Plo
++@AMDEP_TRUE@	./$(DEPDIR)/linux.Plo ./$(DEPDIR)/usb.Plo
  COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
  	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
  LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) \
