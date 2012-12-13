@@ -1,0 +1,43 @@
+Cross-Compilation for the DNS-323
+
+You need a cross-compilation toolchain if you want to compile code on your x86 host that runs on the DNS-323 which is based on an ARM CPU. You can either extract the toolchain from the GPL tarball that D-Link provides at ftp://gpl.dlink.com/DNS-323/dns323_GPL_v1.08_12182009.tgz or you can follow this blog to compile your own. Note that the pre-compiled toolchain in the D-Link tarball is broken and will link everything statically, hence making the resulting binaries rather large.
+
+Get the pre-compiled toolchain
+
+If you don’t feel like compiling your own as described in the next section, grab a tarball of the precompiled toolchain from here: http://files.blujay.ch/dns-323/toolchain_arm.tgz. Extract it to a convenient place and test it as described below.
+
+Get the source and compile it yourself
+
+I extracted the source code of the toolchain from the D-Link tarball, fixed the broken Makefiles so that dynamic linking is possible and put it on GitHub at https://github.com/juergh/toolchain_arm.  Clone the repo and compile it running the following commands:
+
+$ git clone git@github.com:juergh/toolchain_arm.git
+$ cd toolchain_arm
+$ make
+
+Note that you need an old gcc 3.x or early 4.x (I think) to compile the toolchain. A newer gcc version will fail to compile the toolchain successfully. I prefer to use a chroot of an old Ubuntu Hardy distro for the compilation. The resulting toolchain lives under toolchain_arm/toolchain_arm.
+
+Test the toolchain
+
+If you managed to compile it successfully (or downloaded the tarball), move the directory toolchain_arm/toolchain_arm to a convenient place, for example /home/toolchain/toolchain_arm. Create a simple hello.c file with the following content:
+
+#include <stdio.h>
+int main()
+{
+  printf("Hello\n");
+  return 0;
+}
+
+Source toolchain_arm/build-env to set the path and some environment variables and then compile the testprogram:
+
+$ . /home/toolchain/toolchain_arm/build-env
+$ $CC -c hello.c hello
+
+Now check that the resulting executable is an ARM binary and uses shared libraries:
+
+$ file hello
+hello: ELF 32-bit LSB executable, ARM, version 1, dynamically linked
+(uses shared libs), not stripped
+$ $READELF -d hello | grep NEEDED
+ 0x00000001 (NEEDED)                 Shared library: [libc.so.0]
+
+Compile away and have fun…
