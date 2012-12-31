@@ -1,31 +1,45 @@
-Get around an odd build failure.
-diff -urN binutils-2.14.90.0.6/configure binutils-2.14.90.0.6-uClibc/configure
---- binutils-2.14.90.0.6/configure	2003-08-21 10:29:32.000000000 -0500
-+++ binutils-2.14.90.0.6-uClibc/configure	2004-01-07 05:43:40.000000000 -0600
-@@ -906,6 +906,11 @@
+From 76c0a2db1a9798e53e74eff08adae40a68f6c22b Mon Sep 17 00:00:00 2001
+From: Juerg Haefliger <juerg.haefliger@hp.com>
+Date: Mon, 31 Dec 2012 10:46:31 +0100
+Subject: [PATCH 2/3] binutils-uclibc-200-build_modules
+
+---
+ configure    |    5 +++++
+ configure.in |    5 +++++
+ 2 files changed, 10 insertions(+)
+
+diff --git a/configure b/configure
+index 0a89aec..a5b31ca 100755
+--- a/configure
++++ b/configure
+@@ -935,6 +935,11 @@ else
+   build_modules=
  fi
- 
  
 +case "$target" in
 +  *-*-*-uclibc*)
 +    build_modules=
 +    ;;
 +esac
+ 
  ################################################################################
  
- srcname="gnu development package"
-diff -urN binutils-2.14.90.0.6/configure.in binutils-2.14.90.0.6-uClibc/configure.in
---- binutils-2.14.90.0.6/configure.in	2003-08-21 10:29:30.000000000 -0500
-+++ binutils-2.14.90.0.6-uClibc/configure.in	2004-01-07 05:44:02.000000000 -0600
-@@ -178,6 +178,11 @@
+diff --git a/configure.in b/configure.in
+index aae2acf..b6a35f5 100644
+--- a/configure.in
++++ b/configure.in
+@@ -183,6 +183,11 @@ else
+   build_modules=
  fi
- 
  
 +case "$target" in
 +  *-*-*-uclibc*)
 +    build_modules=
 +    ;;
 +esac
+ 
  ################################################################################
  
- srcname="gnu development package"
+-- 
+1.7.9.5
+

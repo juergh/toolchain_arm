@@ -5,8 +5,10 @@
 #############################################################
 BINUTILS_SITE:=http://mirror.linux.org.au/linux/devel/binutils/
 
-BINUTILS_SOURCE:=binutils-2.14.90.0.7.tar.bz2
-BINUTILS_DIR:=$(TOOL_BUILD_DIR)/binutils-2.14.90.0.7
+#BINUTILS_SOURCE:=binutils-2.14.90.0.7.tar.bz2
+#BINUTILS_DIR:=$(TOOL_BUILD_DIR)/binutils-2.14.90.0.7
+BINUTILS_SOURCE:=binutils-2.15.90.0.3.tar.bz2
+BINUTILS_DIR:=$(TOOL_BUILD_DIR)/binutils-2.15.90.0.3
 BINUTILS_CAT:=bzcat
 
 BINUTILS_DIR1:=$(TOOL_BUILD_DIR)/binutils-build

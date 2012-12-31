@@ -1,7 +1,27 @@
-diff -urN binutils-2.14.90.0.7.orig/bfd/config.bfd binutils-2.14.90.0.7/bfd/config.bfd
---- binutils-2.14.90.0.7.orig/bfd/config.bfd	2003-10-29 10:37:47.000000000 -0700
-+++ binutils-2.14.90.0.7/bfd/config.bfd	2004-04-20 01:37:12.000000000 -0600
-@@ -121,7 +121,7 @@
+From f1a088cb8946daf8da8ef861ca56a2bdf88dd42c Mon Sep 17 00:00:00 2001
+From: Juerg Haefliger <juerg.haefliger@hp.com>
+Date: Mon, 31 Dec 2012 10:40:16 +0100
+Subject: [PATCH 1/3] binutils-uclibc-100-conf
+
+---
+ bfd/config.bfd   |   29 +++++++++++++++--------------
+ bfd/configure    |   11 ++++++++---
+ bfd/configure.in |    6 +++---
+ configure        |   12 ++++++++++++
+ configure.in     |   13 +++++++++++++
+ gas/configure    |   17 ++++++++++++++++-
+ gas/configure.in |   12 +++++++++++-
+ ld/configure     |    5 +++++
+ ld/configure.tgt |   43 ++++++++++++++++++++++++++++++-------------
+ libtool.m4       |    5 +++++
+ ltconfig         |   19 +++++++++++++++++++
+ 11 files changed, 137 insertions(+), 35 deletions(-)
+
+diff --git a/bfd/config.bfd b/bfd/config.bfd
+index a158ca6..12605e7 100755
+--- a/bfd/config.bfd
++++ b/bfd/config.bfd
+@@ -126,7 +126,7 @@ case "${targ}" in
      targ_defvec=ecoffalpha_little_vec
      targ_selvecs=bfd_elf64_alpha_vec
      ;;
@@ -10,7 +30,7 @@ diff -urN binutils-2.14.90.0.7.orig/bfd/config.bfd binutils-2.14.90.0.7/bfd/conf
      targ_defvec=bfd_elf64_alpha_vec
      targ_selvecs=ecoffalpha_little_vec
      ;;
-@@ -131,7 +131,7 @@
+@@ -136,7 +136,7 @@ case "${targ}" in
    alpha*-*-*)
      targ_defvec=ecoffalpha_little_vec
      ;;
@@ -19,7 +39,7 @@ diff -urN binutils-2.14.90.0.7.orig/bfd/config.bfd binutils-2.14.90.0.7/bfd/conf
      targ_defvec=bfd_elf64_ia64_little_vec
      targ_selvecs="bfd_elf64_ia64_big_vec bfd_efi_app_ia64_vec"
      ;;
-@@ -214,7 +214,7 @@
+@@ -213,7 +213,7 @@ case "${targ}" in
      targ_defvec=bfd_elf32_littlearm_vec
      targ_selvecs=bfd_elf32_bigarm_vec
      ;;
@@ -28,16 +48,16 @@ diff -urN binutils-2.14.90.0.7.orig/bfd/config.bfd binutils-2.14.90.0.7/bfd/conf
      targ_defvec=bfd_elf32_bigarm_vec
      targ_selvecs=bfd_elf32_littlearm_vec
      ;;
-@@ -222,7 +222,7 @@
+@@ -222,7 +222,7 @@ case "${targ}" in
+     targ_selvecs=bfd_elf32_bigarm_vec
+     ;;
+   arm-*-elf | arm-*-freebsd* | arm*-*-linux-gnu* | arm*-*-conix* | \
+-  arm*-*-uclinux* | arm-*-kfreebsd*-gnu | arm-*-vxworks)
++  arm*-*-uclinux* | arm*-*-linux-uclibc* | arm-*-kfreebsd*-gnu | arm-*-vxworks)
      targ_defvec=bfd_elf32_littlearm_vec
      targ_selvecs=bfd_elf32_bigarm_vec
      ;;
--  arm-*-elf | arm-*-freebsd* | arm*-*-linux-gnu* | arm*-*-conix* | arm*-*-uclinux* | arm-*-kfreebsd*-gnu)
-+  arm-*-elf | arm-*-freebsd* | arm*-*-linux-gnu* | arm*-*-conix* | arm*-*-uclinux* | arm*-*-linux-uclibc* | arm-*-kfreebsd*-gnu)
-     targ_defvec=bfd_elf32_littlearm_vec
-     targ_selvecs=bfd_elf32_bigarm_vec
-     ;;
-@@ -355,7 +355,7 @@
+@@ -360,7 +360,7 @@ case "${targ}" in
      ;;
  
  #ifdef BFD64
@@ -46,7 +66,7 @@ diff -urN binutils-2.14.90.0.7.orig/bfd/config.bfd binutils-2.14.90.0.7/bfd/conf
      targ_defvec=bfd_elf64_hppa_linux_vec
      targ_selvecs=bfd_elf64_hppa_vec
      ;;
-@@ -366,7 +366,7 @@
+@@ -371,7 +371,7 @@ case "${targ}" in
      ;;
  #endif
  
@@ -55,7 +75,7 @@ diff -urN binutils-2.14.90.0.7.orig/bfd/config.bfd binutils-2.14.90.0.7/bfd/conf
      targ_defvec=bfd_elf32_hppa_linux_vec
      targ_selvecs=bfd_elf32_hppa_vec
      ;;
-@@ -488,7 +488,7 @@
+@@ -494,7 +494,7 @@ case "${targ}" in
      targ_selvecs=bfd_elf32_i386_vec
      targ_underscore=yes
      ;;
@@ -64,7 +84,7 @@ diff -urN binutils-2.14.90.0.7.orig/bfd/config.bfd binutils-2.14.90.0.7/bfd/conf
      targ_defvec=bfd_elf32_i386_vec
      targ_selvecs="i386linux_vec bfd_efi_app_ia32_vec"
      targ64_selvecs=bfd_elf64_x86_64_vec
-@@ -502,7 +502,7 @@
+@@ -508,7 +508,7 @@ case "${targ}" in
      targ_defvec=bfd_elf64_x86_64_vec
      targ_selvecs="bfd_elf32_i386_vec i386netbsd_vec i386coff_vec bfd_efi_app_ia32_vec"
      ;;
@@ -73,7 +93,7 @@ diff -urN binutils-2.14.90.0.7.orig/bfd/config.bfd binutils-2.14.90.0.7/bfd/conf
      targ_defvec=bfd_elf64_x86_64_vec
      targ_selvecs="bfd_elf32_i386_vec i386linux_vec bfd_efi_app_ia32_vec"
      ;;
-@@ -662,7 +662,7 @@
+@@ -683,7 +683,7 @@ case "${targ}" in
      targ_selvecs=bfd_elf32_m68k_vec
      targ_underscore=yes
      ;;
@@ -82,7 +102,7 @@ diff -urN binutils-2.14.90.0.7.orig/bfd/config.bfd binutils-2.14.90.0.7/bfd/conf
      targ_defvec=bfd_elf32_m68k_vec
      targ_selvecs=m68klinux_vec
      ;;
-@@ -929,7 +929,8 @@
+@@ -955,7 +955,8 @@ case "${targ}" in
      ;;
  #endif
    powerpc-*-*bsd* | powerpc-*-elf* | powerpc-*-sysv4* | powerpc-*-eabi* | \
@@ -92,7 +112,7 @@ diff -urN binutils-2.14.90.0.7.orig/bfd/config.bfd binutils-2.14.90.0.7/bfd/conf
    powerpc-*-chorus* | powerpc-*-vxworks* | powerpc-*-windiss*)
      targ_defvec=bfd_elf32_powerpc_vec
      targ_selvecs="rs6000coff_vec bfd_elf32_powerpcle_vec ppcboot_vec"
-@@ -961,8 +962,8 @@
+@@ -987,8 +988,8 @@ case "${targ}" in
      targ_selvecs="rs6000coff_vec bfd_elf32_powerpc_vec ppcboot_vec"
      ;;
    powerpcle-*-elf* | powerpcle-*-sysv4* | powerpcle-*-eabi* | \
@@ -103,7 +123,7 @@ diff -urN binutils-2.14.90.0.7.orig/bfd/config.bfd binutils-2.14.90.0.7/bfd/conf
      targ_defvec=bfd_elf32_powerpcle_vec
      targ_selvecs="rs6000coff_vec bfd_elf32_powerpc_vec ppcboot_vec"
      targ64_selvecs="bfd_elf64_powerpc_vec bfd_elf64_powerpcle_vec"
-@@ -1110,7 +1111,7 @@
+@@ -1149,7 +1150,7 @@ case "${targ}" in
      targ_selvecs="bfd_elf32_sparc_vec sunos_big_vec"
      targ_underscore=yes
      ;;
@@ -112,7 +132,7 @@ diff -urN binutils-2.14.90.0.7.orig/bfd/config.bfd binutils-2.14.90.0.7/bfd/conf
      targ_defvec=bfd_elf32_sparc_vec
      targ_selvecs="sparclinux_vec bfd_elf64_sparc_vec sunos_big_vec"
      ;;
-@@ -1157,7 +1158,7 @@
+@@ -1196,7 +1197,7 @@ case "${targ}" in
      targ_defvec=sunos_big_vec
      targ_underscore=yes
      ;;
@@ -121,10 +141,11 @@ diff -urN binutils-2.14.90.0.7.orig/bfd/config.bfd binutils-2.14.90.0.7/bfd/conf
      targ_defvec=bfd_elf64_sparc_vec
      targ_selvecs="bfd_elf32_sparc_vec sparclinux_vec sunos_big_vec"
      ;;
-diff -urN binutils-2.14.90.0.7.orig/bfd/configure binutils-2.14.90.0.7/bfd/configure
---- binutils-2.14.90.0.7.orig/bfd/configure	2003-10-29 10:37:47.000000000 -0700
-+++ binutils-2.14.90.0.7/bfd/configure	2004-04-20 01:32:29.000000000 -0600
-@@ -1699,6 +1699,11 @@
+diff --git a/bfd/configure b/bfd/configure
+index ee62d3b..4cdac67 100755
+--- a/bfd/configure
++++ b/bfd/configure
+@@ -1699,6 +1699,11 @@ linux-gnu*)
    lt_cv_file_magic_test_file=`echo /lib/libc.so* /lib/libc-*.so`
    ;;
  
@@ -136,7 +157,7 @@ diff -urN binutils-2.14.90.0.7.orig/bfd/configure binutils-2.14.90.0.7/bfd/confi
  netbsd*)
    if echo __ELF__ | $CC -E - | grep __ELF__ > /dev/null; then
      lt_cv_deplibs_check_method='match_pattern /lib[^/\.]+\.so\.[0-9]+\.[0-9]+$'
-@@ -5278,7 +5283,7 @@
+@@ -5278,7 +5283,7 @@ if test "${target}" = "${host}"; then
    alpha*-*-freebsd* | alpha*-*-kfreebsd*-gnu)
  	COREFILE=''
  	;;
@@ -145,7 +166,7 @@ diff -urN binutils-2.14.90.0.7.orig/bfd/configure binutils-2.14.90.0.7/bfd/confi
  	COREFILE=trad-core.lo
  	TRAD_HEADER='"hosts/alphalinux.h"'
  	;;
-@@ -5338,7 +5343,7 @@
+@@ -5338,7 +5343,7 @@ if test "${target}" = "${host}"; then
  	COREFILE=trad-core.lo
  	TRAD_HEADER='"hosts/i386mach3.h"'
  	;;
@@ -154,7 +175,7 @@ diff -urN binutils-2.14.90.0.7.orig/bfd/configure binutils-2.14.90.0.7/bfd/confi
  	COREFILE=trad-core.lo
  	TRAD_HEADER='"hosts/i386linux.h"'
  	;;
-@@ -5388,7 +5393,7 @@
+@@ -5376,7 +5381,7 @@ if test "${target}" = "${host}"; then
  	COREFILE=trad-core.lo
  	TRAD_HEADER='"hosts/hp300bsd.h"'
  	;;
@@ -163,10 +184,11 @@ diff -urN binutils-2.14.90.0.7.orig/bfd/configure binutils-2.14.90.0.7/bfd/confi
  	COREFILE=trad-core.lo
  	TRAD_HEADER='"hosts/m68klinux.h"'
  	;;
-diff -urN binutils-2.14.90.0.7.orig/bfd/configure.in binutils-2.14.90.0.7/bfd/configure.in
---- binutils-2.14.90.0.7.orig/bfd/configure.in	2003-10-29 10:37:47.000000000 -0700
-+++ binutils-2.14.90.0.7/bfd/configure.in	2004-04-20 01:32:29.000000000 -0600
-@@ -178,7 +178,7 @@
+diff --git a/bfd/configure.in b/bfd/configure.in
+index 13a1cb1..9c5b738 100644
+--- a/bfd/configure.in
++++ b/bfd/configure.in
+@@ -178,7 +178,7 @@ if test "${target}" = "${host}"; then
    alpha*-*-freebsd* | alpha*-*-kfreebsd*-gnu)
  	COREFILE=''
  	;;
@@ -175,7 +197,7 @@ diff -urN binutils-2.14.90.0.7.orig/bfd/configure.in binutils-2.14.90.0.7/bfd/co
  	COREFILE=trad-core.lo
  	TRAD_HEADER='"hosts/alphalinux.h"'
  	;;
-@@ -259,7 +259,7 @@
+@@ -259,7 +259,7 @@ changequote([,])dnl
  	TRAD_HEADER='"hosts/i386mach3.h"'
  	;;
  changequote(,)dnl
@@ -184,7 +206,7 @@ diff -urN binutils-2.14.90.0.7.orig/bfd/configure.in binutils-2.14.90.0.7/bfd/co
  changequote([,])dnl
  	COREFILE=trad-core.lo
  	TRAD_HEADER='"hosts/i386linux.h"'
-@@ -312,7 +312,7 @@
+@@ -300,7 +300,7 @@ changequote([,])dnl
  	COREFILE=trad-core.lo
  	TRAD_HEADER='"hosts/hp300bsd.h"'
  	;;
@@ -193,32 +215,11 @@ diff -urN binutils-2.14.90.0.7.orig/bfd/configure.in binutils-2.14.90.0.7/bfd/co
  	COREFILE=trad-core.lo
  	TRAD_HEADER='"hosts/m68klinux.h"'
  	;;
-diff -urN binutils-2.14.90.0.7.orig/config.sub binutils-2.14.90.0.7/config.sub
---- binutils-2.14.90.0.7.orig/config.sub	2003-08-21 09:28:47.000000000 -0600
-+++ binutils-2.14.90.0.7/config.sub	2004-04-20 01:32:29.000000000 -0600
-@@ -118,7 +118,7 @@
- # Here we must recognize all the valid KERNEL-OS combinations.
- maybe_os=`echo $1 | sed 's/^\(.*\)-\([^-]*-[^-]*\)$/\2/'`
- case $maybe_os in
--  nto-qnx* | linux-gnu* | freebsd*-gnu* | netbsd*-gnu* | storm-chaos* | os2-emx* | rtmk-nova*)
-+  nto-qnx* | linux-gnu* | linux-uclibc* | freebsd*-gnu* | netbsd*-gnu* | storm-chaos* | os2-emx* | rtmk-nova*)
-     os=-$maybe_os
-     basic_machine=`echo $1 | sed 's/^\(.*\)-\([^-]*-[^-]*\)$/\1/'`
-     ;;
-@@ -1131,7 +1131,8 @@
- 	      | -udi* | -eabi* | -lites* | -ieee* | -go32* | -aux* \
- 	      | -chorusos* | -chorusrdb* \
- 	      | -cygwin* | -pe* | -psos* | -moss* | -proelf* | -rtems* \
--	      | -mingw32* | -linux-gnu* | -uxpv* | -beos* | -mpeix* | -udk* \
-+	      | -mingw32* | -linux-gnu* | -linux-uclibc* \
-+	      | -uxpv* | -beos* | -mpeix* | -udk* \
- 	      | -interix* | -uwin* | -mks* | -rhapsody* | -darwin* | -opened* \
- 	      | -openstep* | -oskit* | -conix* | -pw32* | -nonstopux* \
- 	      | -storm-chaos* | -tops10* | -tenex* | -tops20* | -its* \
-diff -urN binutils-2.14.90.0.7.orig/configure binutils-2.14.90.0.7/configure
---- binutils-2.14.90.0.7.orig/configure	2003-10-29 10:38:23.000000000 -0700
-+++ binutils-2.14.90.0.7/configure	2004-04-20 01:32:29.000000000 -0600
-@@ -1276,6 +1276,18 @@
+diff --git a/configure b/configure
+index f8c5cfe..0a89aec 100755
+--- a/configure
++++ b/configure
+@@ -1298,6 +1298,18 @@ case "${target}" in
    i[3456789]86-*-freebsd* | i[3456789]86-*-kfreebsd*-gnu)
      noconfigdirs="$noconfigdirs target-newlib target-libgloss"
      ;;
@@ -237,10 +238,11 @@ diff -urN binutils-2.14.90.0.7.orig/configure binutils-2.14.90.0.7/configure
    i[3456789]86-*-linux*)
      # The GCC port for glibc1 has no MD_FALLBACK_FRAME_STATE_FOR, so let's
      # not build java stuff by default.
-diff -urN binutils-2.14.90.0.7.orig/configure.in binutils-2.14.90.0.7/configure.in
---- binutils-2.14.90.0.7.orig/configure.in	2003-10-29 10:38:20.000000000 -0700
-+++ binutils-2.14.90.0.7/configure.in	2004-04-20 01:32:29.000000000 -0600
-@@ -515,6 +515,19 @@
+diff --git a/configure.in b/configure.in
+index 7c8cabc..aae2acf 100644
+--- a/configure.in
++++ b/configure.in
+@@ -521,6 +521,19 @@ case "${target}" in
    i[[3456789]]86-*-freebsd* | i[[3456789]]86-*-kfreebsd*-gnu)
      noconfigdirs="$noconfigdirs target-newlib target-libgloss"
      ;;
@@ -260,10 +262,11 @@ diff -urN binutils-2.14.90.0.7.orig/configure.in binutils-2.14.90.0.7/configure.
    i[[3456789]]86-*-linux*)
      # The GCC port for glibc1 has no MD_FALLBACK_FRAME_STATE_FOR, so let's
      # not build java stuff by default.
-diff -urN binutils-2.14.90.0.7.orig/demangler/configure binutils-2.14.90.0.7/demangler/configure
---- binutils-2.14.90.0.7.orig/demangler/configure	2003-10-29 10:38:20.000000000 -0700
-+++ binutils-2.14.90.0.7/demangler/configure	2004-04-20 01:32:29.000000000 -0600
-@@ -1380,6 +1380,11 @@
+diff --git a/gas/configure b/gas/configure
+index 1cb9226..1cdc61d 100755
+--- a/gas/configure
++++ b/gas/configure
+@@ -3401,6 +3401,11 @@ linux-gnu*)
    lt_cv_file_magic_test_file=`echo /lib/libc.so* /lib/libc-*.so`
    ;;
  
@@ -275,22 +278,7 @@ diff -urN binutils-2.14.90.0.7.orig/demangler/configure binutils-2.14.90.0.7/dem
  netbsd*)
    if echo __ELF__ | $CC -E - | grep __ELF__ > /dev/null; then
      lt_cv_deplibs_check_method='match_pattern /lib[^/\.]+\.so\.[0-9]+\.[0-9]+$'
-diff -urN binutils-2.14.90.0.7.orig/gas/configure binutils-2.14.90.0.7/gas/configure
---- binutils-2.14.90.0.7.orig/gas/configure	2003-10-29 10:37:48.000000000 -0700
-+++ binutils-2.14.90.0.7/gas/configure	2004-04-20 01:37:58.000000000 -0600
-@@ -3215,6 +3215,11 @@
-   lt_cv_file_magic_test_file=`echo /lib/libc.so* /lib/libc-*.so`
-   ;;
- 
-+linux-uclibc*)
-+  lt_cv_deplibs_check_method=pass_all
-+  lt_cv_file_magic_test_file=`echo /lib/libuClibc-*.so`
-+  ;;
-+
- netbsd*)
-   if echo __ELF__ | $CC -E - | grep __ELF__ > /dev/null; then
-     lt_cv_deplibs_check_method='match_pattern /lib[^/\.]+\.so\.[0-9]+\.[0-9]+$'
-@@ -4028,6 +4033,7 @@
+@@ -4226,6 +4231,7 @@ for this_target in $target $canon_targets ; do
        alpha*-*-osf*)			fmt=ecoff ;;
        alpha*-*-linuxecoff*)		fmt=ecoff ;;
        alpha*-*-linux-gnu*)		fmt=elf em=linux ;;
@@ -298,7 +286,7 @@ diff -urN binutils-2.14.90.0.7.orig/gas/configure binutils-2.14.90.0.7/gas/confi
        alpha*-*-netbsd*)			fmt=elf em=nbsd ;;
        alpha*-*-openbsd*)		fmt=elf em=obsd ;;
  
-@@ -4044,6 +4050,7 @@
+@@ -4242,6 +4248,7 @@ for this_target in $target $canon_targets ; do
        arm*-*-conix*)			fmt=elf ;;
        arm-*-linux*aout*)		fmt=aout em=linux ;;
        arm*-*-linux-gnu*)		fmt=elf  em=linux ;;
@@ -306,7 +294,7 @@ diff -urN binutils-2.14.90.0.7.orig/gas/configure binutils-2.14.90.0.7/gas/confi
        arm*-*-uclinux*)			fmt=elf  em=linux ;;
        arm-*-netbsdelf*)                 fmt=elf  em=nbsd ;;
        arm-*-*n*bsd*)			fmt=aout em=nbsd ;;
-@@ -4058,6 +4065,7 @@
+@@ -4255,6 +4262,7 @@ for this_target in $target $canon_targets ; do
        avr-*-*)				fmt=elf ;;
  
        cris-*-linux-gnu*)		fmt=multi bfd_gas=yes em=linux ;;
@@ -314,7 +302,7 @@ diff -urN binutils-2.14.90.0.7.orig/gas/configure binutils-2.14.90.0.7/gas/confi
        cris-*-*)				fmt=multi bfd_gas=yes ;;
  
        d10v-*-*)				fmt=elf ;;
-@@ -4114,7 +4122,9 @@
+@@ -4311,7 +4319,9 @@ for this_target in $target $canon_targets ; do
        i386-*-linux*oldld)		fmt=aout em=linux ;;
        i386-*-linux*coff*)		fmt=coff em=linux ;;
        i386-*-linux-gnu*)		fmt=elf em=linux ;;
@@ -324,7 +312,7 @@ diff -urN binutils-2.14.90.0.7.orig/gas/configure binutils-2.14.90.0.7/gas/confi
        i386-*-lynxos*)			fmt=coff em=lynx ;;
        i386-*-sysv[45]*)			fmt=elf ;;
        i386-*-solaris*)			fmt=elf ;;
-@@ -4175,6 +4185,7 @@
+@@ -4371,6 +4381,7 @@ echo "$as_me: WARNING: GAS support for ${generic_target} is preliminary and a wo
        ia64-*-elf*)			fmt=elf ;;
        ia64-*-aix*)			fmt=elf em=ia64aix ;;
        ia64-*-linux-gnu*)		fmt=elf em=linux ;;
@@ -332,15 +320,15 @@ diff -urN binutils-2.14.90.0.7.orig/gas/configure binutils-2.14.90.0.7/gas/confi
        ia64-*-hpux*)			fmt=elf em=hpux ;;
        ia64-*-netbsd*)			fmt=elf em=nbsd ;;
  
-@@ -4201,6 +4212,7 @@
+@@ -4398,6 +4409,7 @@ echo "$as_me: WARNING: GAS support for ${generic_target} is preliminary and a wo
        m68k-*-hpux*)			fmt=hp300 em=hp300 ;;
        m68k-*-linux*aout*)		fmt=aout em=linux ;;
        m68k-*-linux-gnu*)		fmt=elf em=linux ;;
 +      m68k-*-linux-uclibc*)		fmt=elf em=linux ;;
+       m68k-*-uclinux*)			fmt=elf ;;
        m68k-*-gnu*)			fmt=elf ;;
        m68k-*-lynxos*)			fmt=coff em=lynx ;;
-       m68k-*-netbsdelf*)		fmt=elf em=nbsd ;;
-@@ -4257,7 +4269,7 @@
+@@ -4460,7 +4472,7 @@ _ACEOF
        ppc-*-beos*)			fmt=coff ;;
        ppc-*-*n*bsd* | ppc-*-elf*)	fmt=elf ;;
        ppc-*-eabi* | ppc-*-sysv4*)	fmt=elf ;;
@@ -349,7 +337,7 @@ diff -urN binutils-2.14.90.0.7.orig/gas/configure binutils-2.14.90.0.7/gas/confi
  	    case "$endian" in
  		big)  ;;
  		*)    { { echo "$as_me:$LINENO: error: GNU/Linux must be configured big endian" >&5
-@@ -4286,7 +4298,9 @@
+@@ -4487,7 +4499,9 @@ echo "$as_me: error: Solaris must be configured little endian" >&2;}
        ppc-*-kaos*)			fmt=elf ;;
  
        s390x-*-linux-gnu*)		fmt=elf em=linux ;;
@@ -359,7 +347,7 @@ diff -urN binutils-2.14.90.0.7.orig/gas/configure binutils-2.14.90.0.7/gas/confi
  
        sh*-*-linux*)			fmt=elf em=linux
  	    case ${cpu} in
-@@ -4319,6 +4333,7 @@
+@@ -4520,6 +4534,7 @@ echo "$as_me: error: Solaris must be configured little endian" >&2;}
        sparc-*-coff)			fmt=coff ;;
        sparc-*-linux*aout*)		fmt=aout em=linux ;;
        sparc-*-linux-gnu*)		fmt=elf em=linux ;;
@@ -367,10 +355,11 @@ diff -urN binutils-2.14.90.0.7.orig/gas/configure binutils-2.14.90.0.7/gas/confi
        sparc-*-lynxos*)			fmt=coff em=lynx ;;
        sparc-fujitsu-none)		fmt=aout ;;
        sparc-*-elf)			fmt=elf ;;
-diff -urN binutils-2.14.90.0.7.orig/gas/configure.in binutils-2.14.90.0.7/gas/configure.in
---- binutils-2.14.90.0.7.orig/gas/configure.in	2003-10-29 10:37:48.000000000 -0700
-+++ binutils-2.14.90.0.7/gas/configure.in	2004-04-20 01:38:23.000000000 -0600
-@@ -192,6 +192,7 @@
+diff --git a/gas/configure.in b/gas/configure.in
+index 83a5768..88da58c 100644
+--- a/gas/configure.in
++++ b/gas/configure.in
+@@ -194,6 +194,7 @@ changequote([,])dnl
        alpha*-*-osf*)			fmt=ecoff ;;
        alpha*-*-linuxecoff*)		fmt=ecoff ;;
        alpha*-*-linux-gnu*)		fmt=elf em=linux ;;
@@ -378,7 +367,7 @@ diff -urN binutils-2.14.90.0.7.orig/gas/configure.in binutils-2.14.90.0.7/gas/co
        alpha*-*-netbsd*)			fmt=elf em=nbsd ;;
        alpha*-*-openbsd*)		fmt=elf em=obsd ;;
  
-@@ -208,6 +209,7 @@
+@@ -210,6 +211,7 @@ changequote([,])dnl
        arm*-*-conix*)			fmt=elf ;;
        arm-*-linux*aout*)		fmt=aout em=linux ;;
        arm*-*-linux-gnu*)		fmt=elf  em=linux ;;
@@ -386,7 +375,7 @@ diff -urN binutils-2.14.90.0.7.orig/gas/configure.in binutils-2.14.90.0.7/gas/co
        arm*-*-uclinux*)			fmt=elf  em=linux ;;
        arm-*-netbsdelf*)                 fmt=elf  em=nbsd ;;
        arm-*-*n*bsd*)			fmt=aout em=nbsd ;;
-@@ -222,6 +224,7 @@
+@@ -223,6 +225,7 @@ changequote([,])dnl
        avr-*-*)				fmt=elf ;;
  
        cris-*-linux-gnu*)		fmt=multi bfd_gas=yes em=linux ;;
@@ -394,7 +383,7 @@ diff -urN binutils-2.14.90.0.7.orig/gas/configure.in binutils-2.14.90.0.7/gas/co
        cris-*-*)				fmt=multi bfd_gas=yes ;;
  
        d10v-*-*)				fmt=elf ;;
-@@ -278,7 +281,9 @@
+@@ -279,7 +282,9 @@ changequote([,])dnl
        i386-*-linux*oldld)		fmt=aout em=linux ;;
        i386-*-linux*coff*)		fmt=coff em=linux ;;
        i386-*-linux-gnu*)		fmt=elf em=linux ;;
@@ -404,7 +393,7 @@ diff -urN binutils-2.14.90.0.7.orig/gas/configure.in binutils-2.14.90.0.7/gas/co
        i386-*-lynxos*)			fmt=coff em=lynx ;;
  changequote(,)dnl
        i386-*-sysv[45]*)			fmt=elf ;;
-@@ -332,6 +337,7 @@
+@@ -332,6 +337,7 @@ changequote([,])dnl
        ia64-*-elf*)			fmt=elf ;;
        ia64-*-aix*)			fmt=elf em=ia64aix ;;
        ia64-*-linux-gnu*)		fmt=elf em=linux ;;
@@ -412,15 +401,15 @@ diff -urN binutils-2.14.90.0.7.orig/gas/configure.in binutils-2.14.90.0.7/gas/co
        ia64-*-hpux*)			fmt=elf em=hpux ;;
        ia64-*-netbsd*)			fmt=elf em=nbsd ;;
  
-@@ -358,6 +364,7 @@
+@@ -359,6 +365,7 @@ changequote([,])dnl
        m68k-*-hpux*)			fmt=hp300 em=hp300 ;;
        m68k-*-linux*aout*)		fmt=aout em=linux ;;
        m68k-*-linux-gnu*)		fmt=elf em=linux ;;
 +      m68k-*-linux-uclibc*)		fmt=elf em=linux ;;
+       m68k-*-uclinux*)			fmt=elf ;;
        m68k-*-gnu*)			fmt=elf ;;
        m68k-*-lynxos*)			fmt=coff em=lynx ;;
-       m68k-*-netbsdelf*)		fmt=elf em=nbsd ;;
-@@ -412,7 +419,7 @@
+@@ -418,7 +425,7 @@ changequote([,])dnl
        ppc-*-beos*)			fmt=coff ;;
        ppc-*-*n*bsd* | ppc-*-elf*)	fmt=elf ;;
        ppc-*-eabi* | ppc-*-sysv4*)	fmt=elf ;;
@@ -429,7 +418,7 @@ diff -urN binutils-2.14.90.0.7.orig/gas/configure.in binutils-2.14.90.0.7/gas/co
  	    case "$endian" in
  		big)  ;;
  		*)    AC_MSG_ERROR(GNU/Linux must be configured big endian) ;;
-@@ -434,7 +441,9 @@
+@@ -438,7 +445,9 @@ changequote([,])dnl
        ppc-*-kaos*)			fmt=elf ;;
  
        s390x-*-linux-gnu*)		fmt=elf em=linux ;;
@@ -439,7 +428,7 @@ diff -urN binutils-2.14.90.0.7.orig/gas/configure.in binutils-2.14.90.0.7/gas/co
  
        sh*-*-linux*)			fmt=elf em=linux
  	    case ${cpu} in
-@@ -467,6 +476,7 @@
+@@ -471,6 +480,7 @@ changequote([,])dnl
        sparc-*-coff)			fmt=coff ;;
        sparc-*-linux*aout*)		fmt=aout em=linux ;;
        sparc-*-linux-gnu*)		fmt=elf em=linux ;;
@@ -447,10 +436,11 @@ diff -urN binutils-2.14.90.0.7.orig/gas/configure.in binutils-2.14.90.0.7/gas/co
        sparc-*-lynxos*)			fmt=coff em=lynx ;;
        sparc-fujitsu-none)		fmt=aout ;;
        sparc-*-elf)			fmt=elf ;;
-diff -urN binutils-2.14.90.0.7.orig/ld/configure binutils-2.14.90.0.7/ld/configure
---- binutils-2.14.90.0.7.orig/ld/configure	2003-05-05 15:46:49.000000000 -0600
-+++ binutils-2.14.90.0.7/ld/configure	2004-04-20 01:32:29.000000000 -0600
-@@ -1578,6 +1578,11 @@
+diff --git a/ld/configure b/ld/configure
+index ab69001..12dbf38 100755
+--- a/ld/configure
++++ b/ld/configure
+@@ -1578,6 +1578,11 @@ linux-gnu*)
    lt_cv_file_magic_test_file=`echo /lib/libc.so* /lib/libc-*.so`
    ;;
  
@@ -462,10 +452,11 @@ diff -urN binutils-2.14.90.0.7.orig/ld/configure binutils-2.14.90.0.7/ld/configu
  netbsd*)
    if echo __ELF__ | $CC -E - | grep __ELF__ > /dev/null; then
      lt_cv_deplibs_check_method='match_pattern /lib[^/\.]+\.so\.[0-9]+\.[0-9]+$'
-diff -urN binutils-2.14.90.0.7.orig/ld/configure.tgt binutils-2.14.90.0.7/ld/configure.tgt
---- binutils-2.14.90.0.7.orig/ld/configure.tgt	2003-10-29 10:37:48.000000000 -0700
-+++ binutils-2.14.90.0.7/ld/configure.tgt	2004-04-20 01:32:29.000000000 -0600
-@@ -30,6 +30,7 @@
+diff --git a/ld/configure.tgt b/ld/configure.tgt
+index 772f8ad..1d1a974 100644
+--- a/ld/configure.tgt
++++ b/ld/configure.tgt
+@@ -31,6 +31,7 @@ cris-*-*aout*)		targ_emul=crisaout
  			targ_extra_emuls="criself crislinux"
  			targ_extra_libpath=$targ_extra_emuls ;;
  cris-*-linux-gnu*)	targ_emul=crislinux ;;
@@ -473,7 +464,7 @@ diff -urN binutils-2.14.90.0.7.orig/ld/configure.tgt binutils-2.14.90.0.7/ld/con
  cris-*-*)		targ_emul=criself
  			targ_extra_emuls="crisaout crislinux"
  			targ_extra_libpath=$targ_extra_emuls ;;
-@@ -59,14 +60,16 @@
+@@ -60,14 +61,16 @@ sparc*-*-linux*aout*)	targ_emul=sparclinux
  			tdir_elf32_sparc=`echo ${targ_alias} | sed -e 's/aout//'`
  			tdir_sun4=sparc-sun-sunos4
  			;;
@@ -492,7 +483,7 @@ diff -urN binutils-2.14.90.0.7.orig/ld/configure.tgt binutils-2.14.90.0.7/ld/con
  			targ_extra_emuls="sparclinux elf64_sparc sun4"
  			targ_extra_libpath=elf64_sparc
  			tdir_sparclinux=${targ_alias}aout
-@@ -125,7 +128,7 @@
+@@ -129,7 +132,7 @@ m68*-wrs-vxworks*)	targ_emul=sun3 ;;
  m68*-ericsson-ose)	targ_emul=sun3 ;;
  m68*-apple-aux*)	targ_emul=m68kaux ;;
  *-tandem-none)		targ_emul=st2000 ;;
@@ -501,7 +492,7 @@ diff -urN binutils-2.14.90.0.7.orig/ld/configure.tgt binutils-2.14.90.0.7/ld/con
  i[3-7]86-*-nto-qnx*)	targ_emul=i386nto ;;
  i[3-7]86-*-vsta)	targ_emul=vsta ;;
  i[3-7]86-go32-rtems*)	targ_emul=i386go32 ;;
-@@ -149,14 +152,16 @@
+@@ -153,14 +156,16 @@ i[3-7]86-*-linux*aout*)	targ_emul=i386linux
  			tdir_elf_i386=`echo ${targ_alias} | sed -e 's/aout//'`
  			;;
  i[3-7]86-*-linux*oldld)	targ_emul=i386linux; targ_extra_emuls=elf_i386 ;;
@@ -520,7 +511,7 @@ diff -urN binutils-2.14.90.0.7.orig/ld/configure.tgt binutils-2.14.90.0.7/ld/con
  			targ_extra_emuls="elf_i386 i386linux"
  			targ_extra_libpath=elf_i386
  			tdir_i386linux=`echo ${targ_alias}aout | sed -e 's/x86_64/i386/'`
-@@ -256,10 +261,13 @@
+@@ -260,10 +265,13 @@ arm-*-kaos*)		targ_emul=armelf ;;
  arm9e-*-elf)		targ_emul=armelf ;;
  arm-*-oabi)		targ_emul=armelf_oabi ;;
  arm*b-*-linux-gnu*)	targ_emul=armelfb_linux; targ_extra_emuls=armelfb ;;
@@ -535,7 +526,7 @@ diff -urN binutils-2.14.90.0.7.orig/ld/configure.tgt binutils-2.14.90.0.7/ld/con
  strongarm-*-coff)	targ_emul=armcoff ;;
  strongarm-*-elf)	targ_emul=armelf ;;
  strongarm-*-kaos*)	targ_emul=armelf ;;
-@@ -360,7 +368,8 @@
+@@ -365,7 +373,8 @@ m68k-*-linux*aout*)	targ_emul=m68klinux
  			targ_extra_emuls=m68kelf
  			tdir_m68kelf=`echo ${targ_alias} | sed -e 's/aout//'`
  			;;
@@ -545,7 +536,7 @@ diff -urN binutils-2.14.90.0.7.orig/ld/configure.tgt binutils-2.14.90.0.7/ld/con
  			targ_extra_emuls=m68klinux
  			tdir_m68klinux=`echo ${targ_alias} | sed -e 's/linux/linuxaout/'`
  			;;
-@@ -376,9 +385,9 @@
+@@ -382,9 +391,9 @@ m68*-*-netbsdaout* | m68*-*-netbsd*)
  m68*-*-psos*)		targ_emul=m68kpsos ;;
  m68*-*-rtemscoff*)	targ_emul=m68kcoff ;;
  m68*-*-rtems*)		targ_emul=m68kelf ;;
@@ -557,32 +548,32 @@ diff -urN binutils-2.14.90.0.7.orig/ld/configure.tgt binutils-2.14.90.0.7/ld/con
  hppa*-*-*elf*)		targ_emul=hppaelf ;;
  hppa*-*-lites*)		targ_emul=hppaelf ;;
  hppa*-*-netbsd*)	targ_emul=hppanbsd ;;
-@@ -422,16 +431,20 @@
- mips*-*-rtems*)		targ_emul=elf32ebmip ;;
- mips*el-*-vxworks*)	targ_emul=elf32elmip ;;
- mips*-*-vxworks*)	targ_emul=elf32ebmip ;;
+@@ -430,16 +439,20 @@ mips*el-*-vxworks*)	targ_emul=elf32elmip ;;
+ mips*-*-vxworks*)	targ_emul=elf32ebmip
+ 		        targ_extra_emuls="elf32elmip" ;;
+ mips*-*-windiss)	targ_emul=elf32mipswindiss ;;
 -mips64*el-*-linux-gnu*)	targ_emul=elf32ltsmipn32
-+mips64*el-*-linux-gnu* | mips64*el-*-linux-uclibc*) \
++mips64*el-*-linux-gnu* | mips64*el-*-linux-uclibc*)
 +			targ_emul=elf32ltsmipn32
  			targ_extra_emuls="elf32btsmipn32 elf32ltsmip elf32btsmip elf64ltsmip elf64btsmip"
  			;;
 -mips64*-*-linux-gnu*)	targ_emul=elf32btsmipn32
-+mips64*-*-linux-gnu* | mips64*-*-linux-uclibc*) \
++mips64*-*-linux-gnu* | mips64*-*-linux-uclibc*)
 +			targ_emul=elf32btsmipn32
  			targ_extra_emuls="elf32ltsmipn32 elf32btsmip elf32ltsmip elf64btsmip elf64ltsmip"
  			;;
 -mips*el-*-linux-gnu*)	targ_emul=elf32ltsmip
-+mips*el-*-linux-gnu* | mips*el-*-linux-uclibc*) \
++mips*el-*-linux-gnu* | mips*el-*-linux-uclibc*)
 +			targ_emul=elf32ltsmip
  			targ_extra_emuls="elf32btsmip elf32ltsmipn32 elf64ltsmip elf32btsmipn32 elf64btsmip"
  			;;
 -mips*-*-linux-gnu*)	targ_emul=elf32btsmip
-+mips*-*-linux-gnu* | mips*-*-linux-uclibc*) \
++mips*-*-linux-gnu* | mips*-*-linux-uclibc*)
 +			targ_emul=elf32btsmip
  			targ_extra_emuls="elf32ltsmip elf32btsmipn32 elf64btsmip elf32ltsmipn32 elf64ltsmip"
  			;;
  mips*-*-lnews*)		targ_emul=mipslnews ;;
-@@ -454,6 +467,10 @@
+@@ -462,6 +475,10 @@ alpha*-*-linuxecoff*)	targ_emul=alpha targ_extra_emuls=elf64alpha
  alpha*-*-linux-gnu*)	targ_emul=elf64alpha targ_extra_emuls=alpha
  			tdir_alpha=`echo ${targ_alias} | sed -e 's/linux/linuxecoff/'`
  			;;
@@ -593,10 +584,11 @@ diff -urN binutils-2.14.90.0.7.orig/ld/configure.tgt binutils-2.14.90.0.7/ld/con
  alpha*-*-osf*)		targ_emul=alpha ;;
  alpha*-*-gnu*)		targ_emul=elf64alpha ;;
  alpha*-*-netware*)	targ_emul=alpha ;;
-diff -urN binutils-2.14.90.0.7.orig/libtool.m4 binutils-2.14.90.0.7/libtool.m4
---- binutils-2.14.90.0.7.orig/libtool.m4	2003-05-05 15:46:46.000000000 -0600
-+++ binutils-2.14.90.0.7/libtool.m4	2004-04-20 01:32:29.000000000 -0600
-@@ -645,6 +645,11 @@
+diff --git a/libtool.m4 b/libtool.m4
+index d2e3608..950e57e 100644
+--- a/libtool.m4
++++ b/libtool.m4
+@@ -645,6 +645,11 @@ linux-gnu*)
    lt_cv_file_magic_test_file=`echo /lib/libc.so* /lib/libc-*.so`
    ;;
  
@@ -608,10 +600,11 @@ diff -urN binutils-2.14.90.0.7.orig/libtool.m4 binutils-2.14.90.0.7/libtool.m4
  netbsd*)
    if echo __ELF__ | $CC -E - | grep __ELF__ > /dev/null; then
      [lt_cv_deplibs_check_method='match_pattern /lib[^/\.]+\.so\.[0-9]+\.[0-9]+$']
-diff -urN binutils-2.14.90.0.7.orig/ltconfig binutils-2.14.90.0.7/ltconfig
---- binutils-2.14.90.0.7.orig/ltconfig	2003-10-29 10:37:47.000000000 -0700
-+++ binutils-2.14.90.0.7/ltconfig	2004-04-20 01:32:29.000000000 -0600
-@@ -603,6 +603,7 @@
+diff --git a/ltconfig b/ltconfig
+index 0a8c7d2..db7057c 100755
+--- a/ltconfig
++++ b/ltconfig
+@@ -603,6 +603,7 @@ host_os=`echo $host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\3/'`
  # Transform linux* to *-*-linux-gnu*, to support old configure scripts.
  case $host_os in
  linux-gnu*) ;;
@@ -619,7 +612,7 @@ diff -urN binutils-2.14.90.0.7.orig/ltconfig binutils-2.14.90.0.7/ltconfig
  linux*) host=`echo $host | sed 's/^\(.*-.*-linux\)\(.*\)$/\1-gnu\2/'`
  esac
  
-@@ -1259,6 +1260,24 @@
+@@ -1259,6 +1260,24 @@ linux-gnu*)
    dynamic_linker='GNU/Linux ld.so'
    ;;
  
@@ -644,3 +637,6 @@ diff -urN binutils-2.14.90.0.7.orig/ltconfig binutils-2.14.90.0.7/ltconfig
  netbsd*)
    need_lib_prefix=no
    need_version=no
+-- 
+1.7.9.5
+
